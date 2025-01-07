@@ -7,6 +7,8 @@ import sys
 import socket
 import os
 
+# Warning this python script makes active connections to the specified IP address and does port scanning
+
 verbose = 0
 # Default max amounts of port 65535
 port_max = 10000
