@@ -5,4 +5,4 @@ This repository contains multiple python security tools that can be used for all
 - Generating wordlists
 
 ### Development
-This is a experimental repo for educational purposes and i still in active development
+This is a experimental repo for educational purposes. This means also that this repo is still in active development.
