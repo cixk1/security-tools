@@ -1,17 +1,18 @@
+import socket
+import os
+import sys
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from PIL import Image
 from io import BytesIO
-import socket
-import os
-import sys
 
+# DISCLAIMER
 # Warning this python script makes active connections to the specified IP address and does port scanning
 
-verbose = 0
 # Default max amounts of port 65535
 port_max = 10000
+verbose = 0
 
 def scan_all_ports(ip):
     ports = []
@@ -26,12 +27,16 @@ def scan_all_ports(ip):
         sock.close()
     return ports
 
-def check_port_service(host, list_ports):
+def check_port_service(host, all_ports):
+    for port in all_ports:
+        # Iterate through the ports here
+        print(port)
+
     # Check the service running on port
     # Wether is is running a http/s service
 
-    # Return an array at the end of all ports that have http/s service running on them
-    return 0
+    # Return key value pair with port number and according prot next to it
+    return {"port": 123, "protocol": "http"}
 
 def browser_setup():
     WINDOW_SIZE = "1920,1080"
@@ -77,28 +82,13 @@ def browser_execute(id):
     screenshot.save('web-screens/screenshot-' + id + '.png')
     browser.quit()
 
-
-""" if (len(sys.argv) <= 1):
-    print("Specify the target IP as second argument")
-else:
-    target_ip  = sys.argv[1]
-    open_ports = get_all_ports(target_ip)
-    print("Starting browser requests...")
-
-    
-    for port in open_ports:
-        url, status_code = check_http_protc(target_ip, port)
-
-
-        options = browser_setup()
-        browser = webdriver.Chrome(options=options) # Something is wrong here, cannot specify capabilities a parameter
-        browser.get(url)
-
-        if not os.path.exists("./files_web"):
-                os.makedirs("./files_web") 
-        
-        browser_execute(id)
-"""
+def take_screenshots_browser(ip, port, prot):
+    url = prot + "://" + ip + ":" + port
+    options = browser_setup()
+    browser = webdriver.Chrome(options)
+    browser.get(url)
+    id = ip + ":" + port + "/" + prot
+    browser_execute(id)
 
 def intro():
     print("""
@@ -141,7 +131,12 @@ def main():
     open_ports = scan_all_ports(ip_arg)
     
     print("Checking for webservers running on found ports...")
-    filtered_ports = check_port_service(ip_arg, open_ports)
+    filtered_ports_prot = check_port_service(ip_arg, open_ports)
+
+    exit() # Exit here
+    for port, protocol in filtered_ports_prot.items():
+        take_screenshots_browser(ip_arg, port, protocol)
+
 
 
 if __name__ == "__main__":
