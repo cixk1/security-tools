@@ -4,6 +4,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from PIL import Image
 from io import BytesIO
 import socket
+import os
 import sys
 
 # Warning this python script makes active connections to the specified IP address and does port scanning
@@ -25,10 +26,12 @@ def scan_all_ports(ip):
         sock.close()
     return ports
 
-def check_http_protc(host, port):
-    # Make a http request to the server
-    return 0, 0
-    # Return the url and status code
+def check_port_service(host, list_ports):
+    # Check the service running on port
+    # Wether is is running a http/s service
+
+    # Return an array at the end of all ports that have http/s service running on them
+    return 0
 
 def browser_setup():
     WINDOW_SIZE = "1920,1080"
@@ -97,15 +100,48 @@ else:
         browser_execute(id)
 """
 
+def intro():
+    print("""
+Welcome to this program written by cixk
+___________________
+ | _______________ |
+ | |XXXXXXXXXXXXX| |
+ | |XXXXXXXXXXXXX| |
+ | |XXXXXXXXXXXXX| |
+ | |XXXXXXXXXXXXX| |
+ | |XXXXXXXXXXXXX| |
+ |_________________|
+     _[_______]_
+ ___[___________]___
+|         [_____] []|__
+|         [_____] []|  \__
+L___________________J     \ \___\/
+ ___________________      /\
+/###################\    (__)
+          """)
+
+def check_dir():
+    if not os.path.exists("./files-web"):
+                os.makedirs("./files-web") 
+
 def main():
     argument_list = sys.argv
     length_args = len(argument_list)
-    if length_args <= 1 or length_args > 2:
-        print("Only specify the target IP as second argument")
+
+    if (length_args == 1):
+        intro()
+        print("Please specify the target IP address as an argument to the python script\n-> Such as `python script.py 0.0.0.0`")
+        exit()
+
+    if length_args > 2:
+        print("Only specify the target IP as the second argument")
         exit()
     
     ip_arg = argument_list[1]
     open_ports = scan_all_ports(ip_arg)
+    
+    print("Checking for webservers running on found ports...")
+    filtered_ports = check_port_service(ip_arg, open_ports)
 
 
 if __name__ == "__main__":
