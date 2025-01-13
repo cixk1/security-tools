@@ -3,7 +3,7 @@ import random
 
 # Generates words with the following
 # - first capital/small lettter
-# - 4 random numbers appended to the word
+# - In sequence add until 4 random numbers appended to the word
 
 print("Please input a word in all small letters without spaces\n")
 word = input("Please enter a word: ")
