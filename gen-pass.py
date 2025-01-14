@@ -1,4 +1,3 @@
-#!/bin/python3
 import random
 
 # Generates words with the following
