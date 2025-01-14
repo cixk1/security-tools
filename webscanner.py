@@ -1,6 +1,7 @@
 import socket
 import os
 import sys
+import requests
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
@@ -27,16 +28,62 @@ def scan_all_ports(ip):
         sock.close()
     return ports
 
-def check_port_service(host, all_ports):
+def check_port_service(ip, all_ports):
+    ports = {}
     for port in all_ports:
-        # Iterate through the ports here
-        print(port)
-
-    # Check the service running on port
-    # Wether is is running a http/s service
+        try:
+            result = requests.get(f"http://{ip}:{str(port)}/")
+            # Later on add https support here
+            ports[f"{str(port)}"] = "http"
+        except:
+            continue
 
     # Return key value pair with port number and according protocol (prot) next to it
-    return {"port": 123, "protocol": "http"}
+    return ports
+
+def take_screenshots_browser(ip, port, prot):
+    url = prot + "://" + ip + ":" + port
+    options = browser_setup()
+    browser = webdriver.Chrome(options)
+    browser.get(url)
+    id = ip + ":" + port + "-" + prot
+
+    def browser_execute():
+        js = 'return Math.max( document.body.scrollHeight, document.body.offsetHeight,  document.documentElement.clientHeight,  document.documentElement.scrollHeight,  document.documentElement.offsetHeight);'
+
+        scrollheight = browser.execute_script(js)
+
+        if verbose > 0: 
+            print(scrollheight)
+
+        slices = []
+        offset = 0
+        while offset < scrollheight:
+            if verbose > 0: 
+                print(offset)
+
+            browser.execute_script("window.scrollTo(0, %s);" % offset)
+            img = Image.open(BytesIO(browser.get_screenshot_as_png()))
+            offset += img.size[1]
+            slices.append(img)
+
+            if verbose > 0:
+                browser.get_screenshot_as_file('%s/screen_%s.png' % ('/tmp', offset))
+                print(scrollheight)
+
+
+        screenshot = Image.new('RGB', (slices[0].size[0], offset))
+        offset = 0
+        for img in slices:
+            screenshot.paste(img, (0, offset))
+            offset += img.size[1]
+
+        # Later put all the screenshots in a pdf with relevant information
+        screenshot.save('files-web/screenshot-' + id + '.png')
+        browser.quit()
+
+    check_dir()
+    browser_execute()
 
 def browser_setup():
     WINDOW_SIZE = "1920,1080"
@@ -48,47 +95,6 @@ def browser_setup():
 
     return chrome_options
 
-def browser_execute(id):
-    js = 'return Math.max( document.body.scrollHeight, document.body.offsetHeight,  document.documentElement.clientHeight,  document.documentElement.scrollHeight,  document.documentElement.offsetHeight);'
-
-    scrollheight = browser.execute_script(js)
-
-    if verbose > 0: 
-        print(scrollheight)
-
-    slices = []
-    offset = 0
-    while offset < scrollheight:
-        if verbose > 0: 
-            print(offset)
-
-        browser.execute_script("window.scrollTo(0, %s);" % offset)
-        img = Image.open(BytesIO(browser.get_screenshot_as_png()))
-        offset += img.size[1]
-        slices.append(img)
-
-        if verbose > 0:
-            browser.get_screenshot_as_file('%s/screen_%s.png' % ('/tmp', offset))
-            print(scrollheight)
-
-
-    screenshot = Image.new('RGB', (slices[0].size[0], offset))
-    offset = 0
-    for img in slices:
-        screenshot.paste(img, (0, offset))
-        offset += img.size[1]
-
-    # Later put all the screenshots in a pdf with relevant information
-    screenshot.save('web-screens/screenshot-' + id + '.png')
-    browser.quit()
-
-def take_screenshots_browser(ip, port, prot):
-    url = prot + "://" + ip + ":" + port
-    options = browser_setup()
-    browser = webdriver.Chrome(options)
-    browser.get(url)
-    id = ip + ":" + port + "/" + prot
-    browser_execute(id)
 
 def intro():
     print("""
@@ -133,7 +139,6 @@ def main():
     print("Checking for webservers running on found ports...")
     filtered_ports_prot = check_port_service(ip_arg, open_ports)
 
-    exit() # Exit here
     for port, protocol in filtered_ports_prot.items():
         take_screenshots_browser(ip_arg, port, protocol)
 
