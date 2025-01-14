@@ -38,7 +38,6 @@ def check_port_service(ip, all_ports):
         except:
             continue
 
-    # Return key value pair with port number and according protocol (prot) next to it
     return ports
 
 def take_screenshots_browser(ip, port, prot):
