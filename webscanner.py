@@ -56,7 +56,7 @@ def check_port_service(ip, all_ports):
         try:
             result = requests.get(f"http://{ip}:{str(port)}/")
             # Later on add https support here
-            print(f"- found an http service running on {port}")
+            print(f"- found a http service running on {port}")
             ports[f"{str(port)}"] = "http"
         except:
             continue
