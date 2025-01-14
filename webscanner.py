@@ -15,6 +15,25 @@ from io import BytesIO
 port_max = 10000
 verbose = 0
 
+def get_known_ports():
+    return [
+    20,  # FTP Data Transfer
+    21,  # FTP Control
+    22,  # SSH
+    23,  # Telnet
+    25,  # SMTP
+    53,  # DNS
+    67,  # DHCP Server
+    68,  # DHCP Client
+    110, # POP3
+    143, # IMAP
+    3306,# MySQL
+    5432,# PostgreSQL
+    6379,# Redis
+    8080,# HTTP Alternate
+    # Add more ports as needed
+]
+
 def scan_all_ports(ip):
     ports = []
     print("Starting scan for host: " + ip)
@@ -34,6 +53,7 @@ def check_port_service(ip, all_ports):
         try:
             result = requests.get(f"http://{ip}:{str(port)}/")
             # Later on add https support here
+            print(f"- Found an http service running on {port}")
             ports[f"{str(port)}"] = "http"
         except:
             continue
