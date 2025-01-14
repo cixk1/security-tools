@@ -30,8 +30,6 @@ def get_known_ports():
     3306,# MySQL
     5432,# PostgreSQL
     6379,# Redis
-    8080,# HTTP Alternate
-    # Add more ports as needed
 ]
 
 def scan_all_ports(ip):
