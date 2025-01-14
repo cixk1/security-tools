@@ -53,7 +53,6 @@ def check_port_service(ip, all_ports):
 
     ports = {}
     for port in all_ports:
-        print(port)
         try:
             result = requests.get(f"http://{ip}:{str(port)}/")
             # Later on add https support here
