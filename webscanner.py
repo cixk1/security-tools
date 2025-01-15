@@ -30,7 +30,7 @@ def get_known_ports():
     3306,# MySQL
     5432,# PostgreSQL
     6379,# Redis
-]
+    ]
 
 def scan_all_ports(ip):
     ports = []
@@ -63,12 +63,12 @@ def check_port_service(ip, all_ports):
 
     return ports
 
-def take_screenshots_browser(ip, port, prot):
-    url = prot + "://" + ip + ":" + port
+def take_screenshots_browser(ip, port, protocol, images):
+    url = protocol + "://" + ip + ":" + port
     options = browser_setup()
     browser = webdriver.Chrome(options)
     browser.get(url)
-    id = ip + ":" + port + "-" + prot
+    id = ip + "-" + port + "-" + protocol
 
     def browser_execute():
         js = 'return Math.max( document.body.scrollHeight, document.body.offsetHeight,  document.documentElement.clientHeight,  document.documentElement.scrollHeight,  document.documentElement.offsetHeight);'
@@ -100,8 +100,9 @@ def take_screenshots_browser(ip, port, prot):
             screenshot.paste(img, (0, offset))
             offset += img.size[1]
 
-        # Later put all the screenshots in a pdf with relevant information
         screenshot.save('files-web/screenshot-' + id + '.png')
+        images.append(screenshot)
+        
         browser.quit()
 
     check_dir()
@@ -140,9 +141,17 @@ L___________________J     \ \___\/
 
 def check_dir():
     if not os.path.exists("./files-web"):
-                os.makedirs("./files-web") 
+                os.makedirs("./files-web")      
+
+def create_pdf_report(images, ip):
+    pdf_path = f"./web-{ip}-report.pdf"
+
+    images[0].save(
+        pdf_path, "PDF", resolution=100.0, save_all=True, append_images=images[1:]
+    )
 
 def main():
+    images = []
     argument_list = sys.argv
     length_args = len(argument_list)
 
@@ -162,8 +171,9 @@ def main():
     filtered_ports_prot = check_port_service(ip_arg, open_ports)
 
     for port, protocol in filtered_ports_prot.items():
-        take_screenshots_browser(ip_arg, port, protocol)
-
+        take_screenshots_browser(ip_arg, port, protocol, images)
+        
+    create_pdf_report(images, ip_arg)
 
 if __name__ == "__main__":
     main()
