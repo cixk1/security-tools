@@ -14,6 +14,7 @@ from io import BytesIO
 # Default max amounts of port 65535
 port_max = 10000
 verbose = 0
+images = []
 
 def get_known_ports():
     return [
@@ -63,7 +64,7 @@ def check_port_service(ip, all_ports):
 
     return ports
 
-def take_screenshots_browser(ip, port, protocol, images):
+def take_screenshots_browser(ip, port, protocol):
     url = protocol + "://" + ip + ":" + port
     options = browser_setup()
     browser = webdriver.Chrome(options)
@@ -143,7 +144,7 @@ def check_dir():
     if not os.path.exists("./files-web"):
                 os.makedirs("./files-web")      
 
-def create_pdf_report(images, ip):
+def create_pdf_report(ip):
     pdf_path = f"./web-{ip}-report.pdf"
 
     images[0].save(
@@ -151,7 +152,6 @@ def create_pdf_report(images, ip):
     )
 
 def main():
-    images = []
     argument_list = sys.argv
     length_args = len(argument_list)
 
@@ -170,10 +170,12 @@ def main():
     print("Checking for webservers running on found ports...")
     filtered_ports_prot = check_port_service(ip_arg, open_ports)
 
+    print("Starting screenshotting...")
     for port, protocol in filtered_ports_prot.items():
-        take_screenshots_browser(ip_arg, port, protocol, images)
-        
-    create_pdf_report(images, ip_arg)
+        take_screenshots_browser(ip_arg, port, protocol)
+
+    print(len(images))
+    create_pdf_report(ip_arg)
 
 if __name__ == "__main__":
     main()
