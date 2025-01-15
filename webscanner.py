@@ -174,7 +174,6 @@ def main():
     for port, protocol in filtered_ports_prot.items():
         take_screenshots_browser(ip_arg, port, protocol)
 
-    print(len(images))
     create_pdf_report(ip_arg)
 
 if __name__ == "__main__":
