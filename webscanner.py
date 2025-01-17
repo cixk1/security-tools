@@ -132,7 +132,7 @@ Usage: python3 webscanner.py ip-address [options]
 
 Options
     Options are:
-    -p [port-number]   Specify one or multiple port numbers to scan
+    -p [port-number]   Specify one or multiple ports to scan
 
 Examples
     python3 webscanner.py 192.168.0.1 -p 8080,9090,2000
