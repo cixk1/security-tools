@@ -61,6 +61,10 @@ def check_port_service(ip, all_ports):
             ports[f"{str(port)}"] = "http"
         except:
             continue
+    
+    if (len(ports) == 0):
+        print("No ports found with http(s) running on it")
+        exit()
 
     return ports
 
@@ -116,7 +120,6 @@ def browser_setup():
     chrome_options.add_argument("--window-size=%s" % WINDOW_SIZE)
     chrome_options.timeouts = { 'pageLoad': 10000 }
 
-
     return chrome_options
 
 
@@ -138,18 +141,33 @@ ___________________
 L___________________J     \ \___\/
  ___________________      /\
 /###################\    (__)
+
+Usage: python3 webscanner.py ip-address [options]
+
+If no port number is specified all ports are scanned until 10000 due to performance reasons
+-> The maximium port number can be changed using the port_max var
+
+Options are:
+    -p [port-number]   Specify one or multiple port numbers to scan
+
+Example:
+    python3 webscanner.py 192.168.0.1 -p 8080,9090,2000
+    python3 webscanner.py 192.168.0.1
           """)
 
 def check_dir():
     if not os.path.exists("./files-web"):
-                os.makedirs("./files-web")      
+                os.makedirs("./files-web")
 
 def create_pdf_report(ip):
     pdf_path = f"./web-{ip}-report.pdf"
 
-    images[0].save(
-        pdf_path, "PDF", resolution=100.0, save_all=True, append_images=images[1:]
-    )
+    if (len(images) == 0):
+        print("Only 1 screenshot taken not enough for a pdf please see the files directory")
+    else:
+        images[0].save(
+            pdf_path, "PDF", resolution=100.0, save_all=True, append_images=images[1:]
+        )
 
 def main():
     argument_list = sys.argv
@@ -157,15 +175,27 @@ def main():
 
     if (length_args == 1):
         intro()
-        print("Please specify the target IP address as an argument to the python script\n-> Such as `python script.py 0.0.0.0`")
         exit()
 
-    if length_args > 2:
-        print("Only specify the target IP as the second argument")
-        exit()
-    
     ip_arg = argument_list[1]
-    open_ports = scan_all_ports(ip_arg)
+
+    if (argument_list[2]=='-p'):
+        open_ports = []
+        port_arg = argument_list[3]
+
+        if not (isinstance(argument_list[3], int)):
+            ports = port_arg.split(',')
+            for port in ports:
+                port = int(port)
+                if (isinstance(port, int)):
+                    open_ports.append(port)
+                else:
+                    print("Please specify a number as argument")
+                    exit()
+        else:
+            open_ports.append(port)
+    else:
+        open_ports = scan_all_ports(ip_arg)
     
     print("Checking for webservers running on found ports...")
     filtered_ports_prot = check_port_service(ip_arg, open_ports)
