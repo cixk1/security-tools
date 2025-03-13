@@ -125,22 +125,22 @@ def browser_setup():
 
 def intro():
     print("""
-Welcome to this program written by cixk
----------------------------------------
+    Welcome to this program written by cixk
+    ---------------------------------------
 
-Usage: python3 webscanner.py ip-address [options]
+    Usage: python3 webscanner.py ip-address [options]
 
-Options
-    Options are:
-    -p [port-number]   Specify one or multiple ports to scan
+    Options
+        Options are:
+        -p [port-number]   Specify one or multiple ports to scan
 
-Examples
-    python3 webscanner.py 192.168.0.1 -p 8080,9090,2000
-    python3 webscanner.py 192.168.0.1
+    Examples
+        python3 webscanner.py 192.168.0.1 -p 8080,9090,2000
+        python3 webscanner.py 192.168.0.1
 
-Info:
-If no port number is specified all ports are scanned until 10000 due to performance reasons
--> The maximium port number can be changed using the port_max var
+    Info:
+    If no port number is specified all ports are scanned until 10000 due to performance reasons
+    -> The maximium port number can be changed using the port_max var
 
           """)
 
