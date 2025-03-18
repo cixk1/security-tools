@@ -175,7 +175,7 @@ def main():
         intro()
         exit()
 
-    ip_arg = argument_list[1]
+    ip_arg = argiument_list[1]
     open_ports = scan_all_ports(ip_arg)
     
     print("Checking for webservers running on found ports...")
