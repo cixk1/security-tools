@@ -13,3 +13,8 @@ Before running the python script makes sure to install the requirements file by 
 
 ### Development
 This is a experimental repo for educational purposes. This means also that this repo is still in active development.
+
+#### TODO
+To do list for the future
+##### webscanner.py
+- Add support for hostnames translation to ip addresses
