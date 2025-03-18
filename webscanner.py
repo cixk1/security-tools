@@ -6,7 +6,10 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from PIL import Image
+from PIL import ImageDraw
+from PIL import ImageFont
 from io import BytesIO
+from matplotlib import font_manager
 
 # DISCLAIMER
 # Warning this python script makes active connections to the specified IP address and does port scanning
@@ -106,6 +109,12 @@ def take_screenshots_browser(ip, port, protocol):
             offset += img.size[1]
 
         screenshot.save('files-web/screenshot-' + id + '.png')
+        
+        Il = ImageDraw.Draw(screenshot)
+        output = f"IP: {ip}\nPort: {port}\nProtocol: {protocol}"
+        file = font_manager.findfont('Source Code Pro')
+        mfont = ImageFont.truetype(file, 20)
+        Il.text((10, 10), output, font=mfont)
         images.append(screenshot)
         
         browser.quit()
@@ -167,24 +176,7 @@ def main():
         exit()
 
     ip_arg = argument_list[1]
-
-    if (argument_list[2]=='-p'):
-        open_ports = []
-        port_arg = argument_list[3]
-
-        if not (isinstance(argument_list[3], int)):
-            ports = port_arg.split(',')
-            for port in ports:
-                port = int(port)
-                if (isinstance(port, int)):
-                    open_ports.append(port)
-                else:
-                    print("Please specify a number as argument")
-                    exit()
-        else:
-            open_ports.append(port)
-    else:
-        open_ports = scan_all_ports(ip_arg)
+    open_ports = scan_all_ports(ip_arg)
     
     print("Checking for webservers running on found ports...")
     filtered_ports_prot = check_port_service(ip_arg, open_ports)
