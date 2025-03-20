@@ -167,6 +167,10 @@ def create_pdf_report(ip):
             pdf_path, "PDF", resolution=100.0, save_all=True, append_images=images[1:]
         )
 
+def get_ip_by_hostname(target_hostname):
+    # Catch errors thrown later
+    return socket.gethostbyname(target_hostname)
+
 def main():
     argument_list = sys.argv
     length_args = len(argument_list)
@@ -175,7 +179,10 @@ def main():
         intro()
         exit()
 
-    ip_arg = argiument_list[1]
+    target_arg = argument_list[1]
+
+    ip_arg = get_ip_by_hostname(target_arg)
+
     open_ports = scan_all_ports(ip_arg)
     
     print("Checking for webservers running on found ports...")
