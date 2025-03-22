@@ -10,7 +10,6 @@ from PIL import ImageDraw
 from PIL import ImageFont
 from io import BytesIO
 from matplotlib import font_manager
-
 # DISCLAIMER
 # Warning this python script makes active connections to the specified IP address and does port scanning
 
