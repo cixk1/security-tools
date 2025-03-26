@@ -17,3 +17,4 @@ This is a experimental repo for educational purposes. This means also that this 
 To do list for the future
 ##### webscanner.py
 - Add information text to the PDF itself and not on the screenshots itself -> to make it more readable
+- Add HTTPS support
