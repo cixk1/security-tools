@@ -179,6 +179,7 @@ def main():
     target_arg = argument_list[1]
 
     ip_arg = get_ip_by_hostname(target_arg)
+    print("IP address:", ip_arg)
 
     open_ports = scan_all_ports(ip_arg)
     
