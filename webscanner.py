@@ -162,8 +162,11 @@ def create_pdf_report(ip):
         )
 
 def get_ip_by_hostname(target_hostname):
-    # Catch errors thrown later
-    return socket.gethostbyname(target_hostname)
+    try:
+        return socket.gethostbyname(target_hostname)
+    except socket.gaierror:
+        print("The hostname could not be resolved in time")
+        exit()
 
 def main():
     argument_list = sys.argv
