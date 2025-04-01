@@ -3,7 +3,6 @@ This repository contains multiple python security tools that can be used for all
 - Detecting open ports with HTTP(S) service running on it
 
 -> Including taking screenshots of these pages
-- Generating wordlists
 
 ### Installation
 Before running the python script makes sure to install the requirements file by running the following command:
