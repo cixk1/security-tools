@@ -4,12 +4,12 @@ import sys
 import requests
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
 from io import BytesIO
 from matplotlib import font_manager
+import logging
 # DISCLAIMER
 # Warning this python script makes active connections to the specified IP address and does port scanning
 
@@ -51,20 +51,22 @@ def scan_all_ports(ip):
 def check_port_service(ip, all_ports):
     known_ports = get_known_ports()
     for port in all_ports:
-        if (port in known_ports):
+        if port in known_ports:
             all_ports.remove(port)
 
     ports = {}
     for port in all_ports:
         try:
-            result = requests.get(f"http://{ip}:{str(port)}/")
+            requests.get(f"http://{ip}:{str(port)}/")
             # Later on add https support here
             print(f"- found a http service running on {port}")
             ports[f"{str(port)}"] = "http"
-        except:
+        # Catch all exceptions in python
+        except Exception as e:
+            logging.info(e)
             continue
     
-    if (len(ports) == 0):
+    if len(ports) == 0:
         print("No ports found with http(s) running on it")
         exit()
 
@@ -75,7 +77,7 @@ def take_screenshots_browser(ip, port, protocol):
     options = browser_setup()
     browser = webdriver.Chrome(options)
     browser.get(url)
-    id = ip + "-" + port + "-" + protocol
+    scan_id = ip + "-" + port + "-" + protocol
 
     def browser_execute():
         js = 'return Math.max( document.body.scrollHeight, document.body.offsetHeight,  document.documentElement.clientHeight,  document.documentElement.scrollHeight,  document.documentElement.offsetHeight);'
@@ -107,13 +109,13 @@ def take_screenshots_browser(ip, port, protocol):
             screenshot.paste(img, (0, offset))
             offset += img.size[1]
 
-        screenshot.save('files-web/screenshot-' + id + '.png')
+        screenshot.save('files-web/screenshot-' + scan_id + '.png')
         
-        Il = ImageDraw.Draw(screenshot)
+        il = ImageDraw.Draw(screenshot)
         output = f"IP: {ip}\nPort: {port}\nProtocol: {protocol}"
         file = font_manager.findfont('Source Code Pro')
-        mfont = ImageFont.truetype(file, 20)
-        Il.text((10, 10), output, font=mfont)
+        font = ImageFont.truetype(file, 20)
+        il.text((10, 10), output, font=font)
         images.append(screenshot)
         
         browser.quit()
@@ -122,10 +124,10 @@ def take_screenshots_browser(ip, port, protocol):
     browser_execute()
 
 def browser_setup():
-    WINDOW_SIZE = "1920,1080"
+    window_size = "1920,1080"
     chrome_options = Options()
     chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--window-size=%s" % WINDOW_SIZE)
+    chrome_options.add_argument("--window-size=%s" % window_size)
     chrome_options.timeouts = { 'pageLoad': 10000 }
 
     return chrome_options
@@ -154,7 +156,7 @@ def check_dir():
 def create_pdf_report(ip):
     pdf_path = f"./web-{ip}-report.pdf"
 
-    if (len(images) == 0):
+    if len(images) == 0:
         print("Only 1 screenshot taken not enough for a pdf please see the files directory")
     else:
         images[0].save(
@@ -172,7 +174,7 @@ def main():
     argument_list = sys.argv
     length_args = len(argument_list)
 
-    if (length_args == 1):
+    if length_args == 1:
         intro()
         exit()
 
