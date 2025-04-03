@@ -9,6 +9,3 @@ Before running the python script makes sure to install the requirements file by 
 - `pip3 install -r requirements.txt`
 
 -> I recommend making a virtual environment in python and installing the dependencies there
-
-### Development
-This is a experimental repo for educational purposes. This means also that this repo is still in active development.
