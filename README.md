@@ -11,10 +11,10 @@ Before running the python script makes sure to install the requirements file by 
 -> I recommend making a virtual environment in python and installing the dependencies there
 
 ### Development
-This is a experimental repo for educational purposes. This means also that this repo is still in active development.
+This is an experimental repo for educational purposes. This means also that this repo is still in active development.
 
 #### TODO
-To do list for the future
-##### webscanner.py
+To do list of features to add in the future
+##### Web scanner
 - Add information text to the PDF itself and not on the screenshots itself -> to make it more readable
 - Add HTTPS support
